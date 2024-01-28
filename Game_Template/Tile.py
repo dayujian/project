@@ -12,6 +12,5 @@ class Tile(pygame.sprite.Sprite):
         self.rect.topleft = (x, y)
 
     def draw(self, window, dx=0, dy=0):
-        rect = self.rect
-        rect = rect.move(dx, dy)
-        window.blit(self.image, rect)
+        self.rect = self.rect.move(-dx, -dy)
+        window.blit(self.image, self.rect)
