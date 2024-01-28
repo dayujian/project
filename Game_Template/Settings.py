@@ -13,21 +13,25 @@ class SceneSettings:
     tileXnum = 48 # 64
     tileYnum = 27 # 36
     tileWidth = tileHeight = 40
-
+    obstacleDensity=0.05
 class PlayerSettings:
     # Initial Player Settings
-    playerSpeed = 7
+    playerSpeed = 5
     playerWidth = 60
-    playerHeight = 55
-    playerHP = 20
+    playerHeight = 50
+    playerHP = 100
     playerAttack = 5
     playerDefence = 1
     playerMoney = 100
+    playerMagic = 10
+    playerMagicAttack = 10
 
 class NPCSettings:
     npcSpeed = 1
     npcWidth = 60
     npcHeight = 60
+    patrollingRange = 70
+    talkCD = 50
 
 class NPCType(Enum):
     DIALOG = 1
@@ -54,7 +58,7 @@ class DialogSettings:
     textSize = 48 # Default font size
     textStartX = WindowSettings.width // 4 + 10         # Coordinate X of the first line of dialog
     textStartY = WindowSettings.height // 3 * 2 + 30    # Coordinate Y of the first line of dialog
-    textVerticalDist = textSize // 4 * 3                # Vertical distance of two lines
+    textVerticalDist = textSize                 # Vertical distance of two lines
 
     npcWidth = WindowSettings.width // 5
     npcHeight = WindowSettings.height // 3
@@ -84,6 +88,12 @@ class BattleSettings:
     monsterCoordY = WindowSettings.height // 2 
 
     stepSize = 20
+    animationCount = 15
+
+    magicWidth = WindowSettings.width // 20
+    magicHeight = WindowSettings.height // 6
+    MagicCoordX = WindowSettings.width // 8 + 200
+    MagicCoordY = WindowSettings.height // 2 
 
 class ShopSettings:
     boxWidth = 800
@@ -95,6 +105,11 @@ class ShopSettings:
     textStartX = boxStartX + 10         # Coordinate X of the first line of dialog
     textStartY = boxStartY + 25    # Coordinate Y of the first line of dialog
 
+class BagSettings:
+    textSize = 56
+    textStartX = ShopSettings.textStartX * 0.625
+    textStartY = ShopSettings.textStartY - 200
+
 class GamePath:
     # Window related path
     menu = r".\assets\background\menu.png"
@@ -103,6 +118,12 @@ class GamePath:
 
     # player/npc related path
     npc = r".\assets\npc\npc.png"
+    shop_npc=[
+        r".\assets\npc\shop_npc\1.png",
+        r".\assets\npc\shop_npc\2.png",
+        r".\assets\npc\shop_npc\3.png",
+        r".\assets\npc\shop_npc\4.png"
+    ]
     player = [
         r".\assets\player\1.png", 
         r".\assets\player\1.png",
@@ -152,10 +173,81 @@ class GamePath:
 
     tree = r".\assets\tiles\tree.png"
 
-    bgm = [r".\assets\bgm\city.mp3",
-           r".\assets\bgm\wild.mp3",
-           r".\assets\bgm\boss.mp3"]
+    bgm = [
+        r".\assets\bgm\city.mp3",
+        r".\assets\bgm\wild.mp3",
+        r".\assets\bgm\boss.mp3"
+    ]
+    
+    font = r".\assets\font\SongHuiZongShouJinJiaCuBan-2.ttf"
 
+    magic = [
+        [r".\assets\new\magic\1.png"],
+        [r".\assets\new\magic\21.png",
+         r".\assets\new\magic\22.png",
+         r".\assets\new\magic\23.png",
+         r".\assets\new\magic\24.png",
+         r".\assets\new\magic\25.png",
+         r".\assets\new\magic\26.png",
+         r".\assets\new\magic\27.png",
+         r".\assets\new\magic\28.png",
+         r".\assets\new\magic\29.png",
+         r".\assets\new\magic\2x.png"],
+        [r".\assets\new\magic\31.png",
+         r".\assets\new\magic\32.png",
+         r".\assets\new\magic\33.png",
+         r".\assets\new\magic\34.png",
+         r".\assets\new\magic\35.png"],
+        [r".\assets\new\magic\411.png",
+         r".\assets\new\magic\412.png",
+         r".\assets\new\magic\413.png",
+         r".\assets\new\magic\414.png",
+         r".\assets\new\magic\415.png",
+         r".\assets\new\magic\416.png",
+         r".\assets\new\magic\417.png",
+         r".\assets\new\magic\418.png",
+         r".\assets\new\magic\421.png",
+         r".\assets\new\magic\422.png",
+         r".\assets\new\magic\423.png",
+         r".\assets\new\magic\424.png",
+         r".\assets\new\magic\425.png",
+         r".\assets\new\magic\426.png"],
+        [r".\assets\new\magic\51.png",
+         r".\assets\new\magic\52.png",
+         r".\assets\new\magic\53.png",
+         r".\assets\new\magic\54.png",
+         r".\assets\new\magic\55.png",
+         r".\assets\new\magic\56.png",
+         r".\assets\new\magic\57.png",
+         r".\assets\new\magic\58.png",             
+         r".\assets\new\magic\59.png"]
+    ]
+
+    weapon = [
+        r".\assets\new\weapon\1.png",
+        r".\assets\new\weapon\2.png",
+        r".\assets\new\weapon\3.png"
+    ]
+
+    equipment = [
+        r".\assets\new\equipment\1.png",
+        r".\assets\new\equipment\2.png",
+        r".\assets\new\equipment\3.png"
+    ]
+    
+    druid = r".\assets\npc\druid.png"
+
+    deadplayer = r".\assets\player\5.png"
+
+    gameover = r".\assets\background\gameover.jpg"
+
+    magicmaster = r".\assets\npc\magic_master.png"
+
+    weaponmaster = r".\assets\npc\weapon_master.png"
+
+    gamewin = r".\assets\background\gamewin.jpg"
+
+    gamewin2 = r".\assets\background\gamewin2.png"
 class PortalSettings:
     width = 320
     height = 320
@@ -171,10 +263,17 @@ class GameState(Enum):
     GAME_PLAY_WILD = 6
     GAME_PLAY_CITY = 7
     GAME_PLAY_BOSS = 8
+    GAME_WIN_TWICE = 9
 
 class GameEvent:
     EVENT_BATTLE = pygame.USEREVENT + 1
     EVENT_DIALOG = pygame.USEREVENT + 2
-    EVENT_SWITCH = pygame.USEREVENT + 3
-    EVENT_RESTART = pygame.USEREVENT + 4
-    EVENT_SHOP = pygame.USEREVENT + 5
+    EVENT_SWITCH_TO_WILD = pygame.USEREVENT + 3
+    EVENT_SWITCH_TO_CITY = pygame.USEREVENT + 4
+    EVENT_SWITCH_TO_BOSS = pygame.USEREVENT + 5
+    EVENT_RESTART = pygame.USEREVENT + 6
+    EVENT_SHOP = pygame.USEREVENT + 7
+    EVENT_DIED = pygame.USEREVENT + 8
+    EVENT_WIN = pygame.USEREVENT + 9
+    EVENT_WIN_TWICE = pygame.USEREVENT + 10
+
